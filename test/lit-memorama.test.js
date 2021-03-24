@@ -18,7 +18,9 @@ describe('LitMemorama', () => {
   });
 
   it('can override the title via attribute', async () => {
-    const el = await fixture(html`<lit-memorama title="attribute title"></lit-memorama>`);
+    const el = await fixture(
+      html`<lit-memorama title="attribute title"></lit-memorama>`
+    );
 
     expect(el.title).to.equal('attribute title');
   });

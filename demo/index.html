@@ -15,12 +15,9 @@
     import { html, render } from 'lit-html';
     import '../lit-memorama.js';
 
-    const title = 'Hello Alejandro!';
     render(
       html`
-        <lit-memorama .title=${title}>
-          some more light-dom
-        </lit-memorama>
+        <lit-memorama></lit-memorama>
       `,
       document.querySelector('#demo')
     );
