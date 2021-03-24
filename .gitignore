@@ -11,7 +11,8 @@
 
 ## testing
 /coverage/
-/gh-pages/
+/gh-pages/node_modules
+/gh-pages/src
 
 ## temp folders
 /.tmp/
