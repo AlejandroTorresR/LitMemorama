@@ -3,7 +3,7 @@ import { LitElement, css, html } from 'lit-element';
 export class Card extends LitElement {
     static get styles() {
       return css`
-        :host {
+        #card {
           border-radius: 8px;
           display: inline-flex;
           justify-content: center;
@@ -16,27 +16,54 @@ export class Card extends LitElement {
           background: #fff;
           box-shadow: 0px 0px 15px #888888;
         }
+        .transparent{
+          opacity: 0;
+        }
+        #card.hide{
+          display: none;
+        }
       `;
     }
 
     static get properties() {
       return {
-        icon: { type: String }
+        icon: { 
+          type: String,
+        },
+        index: { 
+          type: Number,
+        },
+        open: {
+          type: Boolean,
+        },
+        hide: {
+          type: Boolean,
+        },
       };
     }
 
     constructor() {
       super();
       this.icon = '❤️';
+      this.index = '';
+      this.open = false;
+      this.hide = false;
     }
 
-    showIcon(){
-      this.dispatchEvent(new CustomEvent('show-icon', { detail: this.icon }) );
+    firstUpdated(){
+      this.addEventListener('hide', () => {
+        this.hide = true;
+      });
+      this.addEventListener('open', () => {
+        this.open = !this.open;
+      });
     }
 
     render(){
         return html`
-            <div @click="${this.showIcon}">${this.icon}</div>
+            <div id="card" class="${this.hide ? 'hide' : ''}">
+              <span class="${this.open ? '' : 'transparent'}">${this.icon}</span>
+            </div>
         `;
     }
 }

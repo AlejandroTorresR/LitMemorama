@@ -8,18 +8,17 @@ export class LitMemorama extends LitElement {
         display: block;
       }
       .table {
-        max-height: 640px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        align-content: center;
+        justify-items: center;
         max-width: 700px;
         background: rgba(33, 150, 243, .8);
         padding: 16px;
-        display: flex;
-        flex-flow: wrap;
-        justify-content: center;
-        border: 5px white;
+        border: 5px solid #dadada;
         border-style: solid;
-        margin: 0 auto;
+        margin: 16px auto;
         border-radius: 30px;
-        box-shadow: rgb(0 188 212 / 30%) 10px 10px 31px -11px;
         overflow: auto;
       }
       select{
@@ -35,17 +34,23 @@ export class LitMemorama extends LitElement {
   static get properties() {
     return {
       deck: {
-        type: Array,
-        value: [],
+        type: Array
       },
       gameDifficulties: {
-        type: Array,
-        value: []
+        type: Array
       },
       gameDifficulty: {
-        type: Number,
-        value: 0
-      }
+        type: Number
+      },
+      opened: {
+        type: Array,
+      },
+      canMove: {
+        type: Boolean,
+      },
+      turn: {
+        type: Number
+      },
     };
   }
 
@@ -53,20 +58,15 @@ export class LitMemorama extends LitElement {
     super();
     this.gameDifficulties = ['easy', 'medium', 'hard'];
     this.icons = ['🌟','🍒','🍭','🍰','🍓','🎨','🚗','🎀','💖','☠️','👾','🐶','👻','👑','🙂'];
-    this._initGame();
+    this._init();
   }
 
-  firstUpdated(){
-
-  }
-
-  _initGame() {
+  _init() {
     this.shuffle();
-    this.turn = 1;
-    this.isOver = false;
     this.canMove = true;
-    this.score = { 1: 0, 2: 0 };
     this.opened = [];
+    this.score = { 0: 0, 1: 0 };
+    this.turn = 0;
   }
 
   shuffle() {
@@ -76,22 +76,61 @@ export class LitMemorama extends LitElement {
 
   onChange(){
     this.gameDifficulty = (Number(this.shadowRoot.querySelector('#sel').value) + 1) * 5;
-    this._initGame();
+    this._init();
+  }
+
+  _closeCards(event){
+    return new Promise(resolve => {
+      setTimeout(() => {
+        this.opened[0].target.dispatchEvent(new Event(event));
+        this.opened[1].target.dispatchEvent(new Event(event));
+        this.opened = [];
+        this.canMove = true;
+        resolve();
+      }, 1000);
+    });
+  }
+
+  _played(){
+    this.canMove = false;
+    if(this.opened[0].icon === this.opened[1].icon){
+      this._closeCards('hide')
+      this.score[this.turn%2]++
+      if(this.score[0] + this.score[1] === this.gameDifficulty){
+        alert(`Ganador ${this.turn%2 === 0 ? 'Player 1' : 'Player 2'}`);
+      }
+    } else {
+      this._closeCards('open')
+      this.turn++
+    }
   }
 
   _openCard(e) {
-    console.log(e.detail)
+    if(this.canMove){
+      if(this.opened.length > 0 && this.opened.length < 2 && this.opened[0].index != e.target.index || !this.opened.length){
+        e.target.dispatchEvent(new Event('open'));
+        this.opened.push({
+          icon: e.target.icon,
+          index: e.target.index,
+          target: e.target,
+        });
+      }
+      if(this.opened.length === 2){
+        this._played();
+      }
+    }
   }
 
   render() {
     return html`
-      <player-memorama name="P1"></player-memorama>
-      <player-memorama name="P2"></player-memorama>
+      <player-memorama name="P1" .active="${this.turn%2 === 0 ? true : false}" score="${this.score[0]}"></player-memorama>
+      <player-memorama name="P2" .active="${this.turn%2 === 1 ? true : false}" score="${this.score[1]}"></player-memorama>
       <select id="sel" @change="${this.onChange}">
         ${this.gameDifficulties.map( (opt, index) => html`<option value="${index}" selected="${this.selected === opt}">${opt}</option>` )}
       </select>
+
       <div class="table">
-        ${this.deck.map( card => html`<card-memorama icon="${card}" @show-icon="${this._openCard}"></card-memorama>` )}
+        ${this.deck.map( (card, index) => html`<card-memorama icon="${card}" index="${index}" @click="${this._openCard}"></card-memorama>` )}
       </div>
     `;
   }
