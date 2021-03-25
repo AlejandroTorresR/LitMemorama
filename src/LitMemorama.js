@@ -21,12 +21,27 @@ export class LitMemorama extends LitElement {
         border-radius: 30px;
         overflow: auto;
       }
+      button,
       select {
         width: 100px;
         height: 48px;
         padding: 8px;
+        margin: 0 4px;
         border-radius: 8px;
+        border: none;
         cursor: pointer;
+        font-weight: bold;
+        color: #fff;
+        background: #ff9800;
+        outline: none;
+        text-transform: capitalize;
+      }
+      .container{
+        max-width: 700px;
+        margin: 0 auto;
+        display: flex;
+        flex-flow: row;
+        justify-content: space-between;
       }
     `;
   }
@@ -80,9 +95,11 @@ export class LitMemorama extends LitElement {
   _init() {
     this.shuffle();
     this.canMove = true;
+    this.gameDifficulty = 0;
     this.opened = [];
     this.score = { 0: 0, 1: 0 };
     this.turn = 0;
+    this.reset();
   }
 
   shuffle() {
@@ -143,27 +160,36 @@ export class LitMemorama extends LitElement {
     }
   }
 
+  reset(){
+    let deck = this.shadowRoot.querySelectorAll('card-memorama');
+    for(let d of deck){
+      d.dispatchEvent(new Event('reset'));
+    }
+  }
+
   render() {
     return html`
-      <player-memorama
-        name="P1"
-        .active="${this.turn % 2 === 0}"
-        score="${this.score[0]}"
-      ></player-memorama>
-      <player-memorama
-        name="P2"
-        .active="${this.turn % 2 === 1}"
-        score="${this.score[1]}"
-      ></player-memorama>
-      <select id="sel" @change="${this.onChange}">
-        ${this.gameDifficulties.map(
-          (opt, index) =>
-            html`<option value="${index}" selected="${this.selected === opt}">
-              ${opt}
-            </option>`
-        )}
-      </select>
-
+      <div class="container">
+        <player-memorama
+          name="P1"
+          .active="${this.turn % 2 === 0}"
+          score="${this.score[0]}"
+        ></player-memorama>
+        <player-memorama
+          name="P2"
+          .active="${this.turn % 2 === 1}"
+          score="${this.score[1]}"
+        ></player-memorama>
+        <select id="sel" @change="${this.onChange}">
+          ${this.gameDifficulties.map(
+            (opt, index) =>
+              html`<option value="${index}" selected="${this.selected === opt}">
+                ${opt}
+              </option>`
+          )}
+        </select>
+        <button @click="${this.reset}">Reset</button>
+      </div>
       <div class="table">
         ${this.deck.map(
           (card, index) =>

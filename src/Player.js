@@ -5,7 +5,7 @@ export class Player extends LitElement {
     return css`
       #player {
         border: solid 3px;
-        width: 80px;
+        width: 120px;
         height: 48px;
         display: inline-flex;
         justify-content: center;
@@ -16,8 +16,10 @@ export class Player extends LitElement {
         box-shadow: 0px 0px 3px #888888;
         background: #dadada;
         cursor: default;
+        transition: all 1s;
       }
       #player.active {
+        transition: all 1s;
         box-shadow: 0px 0px 15px #888888;
         background: rgba(33, 150, 243, 0.8);
       }

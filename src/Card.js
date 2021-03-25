@@ -57,6 +57,10 @@ export class Card extends LitElement {
     this.addEventListener('open', () => {
       this.open = !this.open;
     });
+    this.addEventListener('reset', () => {
+      this.hide = false;
+      this.open = false;
+    });
   }
 
   render() {

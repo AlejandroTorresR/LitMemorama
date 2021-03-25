@@ -8,13 +8,13 @@
     "build": "webpack"
   },
   "keywords": [],
-  "author": "",
+  "author": "Alejandro Torres Roa",
   "license": "ISC",
   "devDependencies": {
     "webpack": "^5.28.0",
     "webpack-cli": "^4.5.0"
   },
   "dependencies": {
-    "lit-memorama": "^0.0.0"
+    "lit-memorama": "^0.0.2"
   }
 }
