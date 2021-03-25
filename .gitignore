@@ -12,7 +12,7 @@
 ## testing
 /coverage/
 /gh-pages/node_modules
-/gh-pages/src
+/gh-pages/dist
 
 ## temp folders
 /.tmp/

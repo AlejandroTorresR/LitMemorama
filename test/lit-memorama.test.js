@@ -3,18 +3,42 @@ import { html, fixture, expect } from '@open-wc/testing';
 import '../lit-memorama.js';
 
 describe('LitMemorama', () => {
-  it('has a default title "Hey there" and counter 5', async () => {
-    const el = await fixture(html`<lit-memorama></lit-memorama>`);
 
-    expect(el.title).to.equal('Hey there');
-    expect(el.counter).to.equal(5);
+  it('get game difficulty', async () => {
+    const el = await fixture(html`<lit-memorama></lit-memorama>`);
+    el.onChange();
+    expect(el.gameDifficulty).to.equal(15);
   });
 
-  it('increases the counter on button click', async () => {
+  it('close selected card', async () => {
     const el = await fixture(html`<lit-memorama></lit-memorama>`);
-    el.shadowRoot.querySelector('button').click();
+    el._closeCards();
+  });
 
-    expect(el.counter).to.equal(6);
+  it('play selected card equal', async () => {
+    const el = await fixture(html`<lit-memorama></lit-memorama>`);
+    el.opened = [{icon: '🌟'}, {icon: '🌟'}];
+    el._played();
+  });
+
+  it('play selected card diff', async () => {
+    const el = await fixture(html`<lit-memorama></lit-memorama>`);
+    el.opened = [{icon: '🌟'}, {icon: '🍒'}];
+    el._played();
+  });
+
+  it('open selected card', async () => {
+    const el = await fixture(html`<lit-memorama></lit-memorama>`);
+    el.canMove = true;
+    el.opened = [{index: 0}, {index: 1}];
+    el._openCard(el.opened[1]);
+  });
+
+  it('open selected card empty', async () => {
+    const el = await fixture(html`<lit-memorama></lit-memorama>`);
+    el.canMove = true;
+    el.opened = [];
+    el._openCard([{index: 0}]);
   });
 
   it('can override the title via attribute', async () => {

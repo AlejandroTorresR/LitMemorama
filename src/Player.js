@@ -14,14 +14,14 @@ export class Player extends LitElement {
         color: #fff;
         font-size: 20px;
         box-shadow: 0px 0px 3px #888888;
-        background: #dadada;
+        background: #333;
         cursor: default;
         transition: all 1s;
       }
       #player.active {
         transition: all 1s;
         box-shadow: 0px 0px 15px #888888;
-        background: rgba(33, 150, 243, 0.8);
+        background: #0A589E;
       }
       span {
         padding-left: 8px;

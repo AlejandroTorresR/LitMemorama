@@ -31,12 +31,13 @@ export class LitMemorama extends LitElement {
         border: none;
         cursor: pointer;
         font-weight: bold;
+        font-size: 14px;
         color: #fff;
-        background: #ff9800;
+        background: #0A589E;
         outline: none;
         text-transform: capitalize;
       }
-      .container{
+      .container {
         max-width: 700px;
         margin: 0 auto;
         display: flex;
@@ -92,10 +93,15 @@ export class LitMemorama extends LitElement {
     this._init();
   }
 
+  firstUpdated() {
+    this.shadowRoot.querySelector('#sel').addEventListener('change', () => {
+      this.onChange();
+    });
+  }
+
   _init() {
     this.shuffle();
     this.canMove = true;
-    this.gameDifficulty = 0;
     this.opened = [];
     this.score = { 0: 0, 1: 0 };
     this.turn = 0;
@@ -130,9 +136,6 @@ export class LitMemorama extends LitElement {
     if (this.opened[0].icon === this.opened[1].icon) {
       this._closeCards('hide');
       this.score[this.turn % 2] += 1;
-      if (this.score[0] + this.score[1] === this.gameDifficulty) {
-        alert(`Ganador ${this.turn % 2 === 0 ? 'Player 1' : 'Player 2'}`);
-      }
     } else {
       this._closeCards('open');
       this.turn += 1;
@@ -160,9 +163,9 @@ export class LitMemorama extends LitElement {
     }
   }
 
-  reset(){
-    let deck = this.shadowRoot.querySelectorAll('card-memorama');
-    for(let d of deck){
+  reset() {
+    const deck = this.shadowRoot.querySelectorAll('card-memorama');
+    for (const d of deck) {
       d.dispatchEvent(new Event('reset'));
     }
   }
@@ -180,7 +183,7 @@ export class LitMemorama extends LitElement {
           .active="${this.turn % 2 === 1}"
           score="${this.score[1]}"
         ></player-memorama>
-        <select id="sel" @change="${this.onChange}">
+        <select id="sel" aria-label="sel">
           ${this.gameDifficulties.map(
             (opt, index) =>
               html`<option value="${index}" selected="${this.selected === opt}">
